@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Texas A&M Campus Heatmap</title>
-  <meta charset="utf-8" />
-
-  <!-- Leaflet CSS -->
+  <title>Heatmap</title>
+  <meta charset="utf-8">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- Leaflet.heat plugin -->
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-
   <style>
-    body { margin:0; padding:0; }
-    #map { height: 100vh; }
+    body, #map { margin: 0; padding: 0; height: 100vh; }
+    .legend {
+      background: white;
+      padding: 10px;
+      font-size: 13px;
+      color: #333;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 5px;
+    }
+    .legend i {
+      width: 14px;
+      height: 14px;
+      float: left;
+      margin-right: 6px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-
 <div id="map"></div>
-
 <script>
-  var map = L.map('map').setView([30.6175, -96.3410], 15.5);
+  var map = L.map('map').setView([30.6175, -96.3410], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
   }).addTo(map);
 
-  var heatPoints = [
+  var heat = [
     [30.614731, -96.347685, 0.6],
     [30.616919, -96.344173, 0.3],
     [30.617200, -96.344467, 0.9],
@@ -46,12 +51,25 @@
     [30.611101, -96.341755, 0.6]
   ];
 
-  var heat = L.heatLayer(heatPoints, {
-    radius: 25,
-    blur: 15,
-    maxZoom: 15
+  L.heatLayer(heat, {
+    radius: 30,
+    blur: 20,
+    maxZoom: 17
   }).addTo(map);
-</script>
 
+  var legend = L.control({ position: 'bottomright' });
+
+  legend.onAdd = function () {
+    var d = L.DomUtil.create('div', 'legend');
+    d.innerHTML = '<b>Severity</b><br>' +
+      '<i style="background: blue"></i> Low<br>' +
+      '<i style="background: limegreen"></i> Medium<br>' +
+      '<i style="background: orange"></i> High<br>' +
+      '<i style="background: red"></i> Urgent';
+    return d;
+  };
+
+  legend.addTo(map);
+</script>
 </body>
 </html>
